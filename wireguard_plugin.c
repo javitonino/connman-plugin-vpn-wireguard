@@ -4,8 +4,10 @@
 #include <arpa/inet.h>
 #include <stdlib.h>
 #include <strings.h>
+#include <string.h>
 #include <stdio.h>
 #include <net/if.h>
+#include <netdb.h>
 
 #include <dbus/dbus.h>
 #include <connman/plugin.h>
@@ -13,7 +15,7 @@
 #include <connman/ipconfig.h>
 #include <connman/vpn/plugins/vpn.h>
 
-char * cidr_to_netmask(char* address) {
+char * cidr_to_netmask(const char * address) {
     char *cidr = index(address, '/') + 1;
     int prefix_len = 24;
     if (cidr) {
@@ -22,6 +24,25 @@ char * cidr_to_netmask(char* address) {
     struct in_addr mask;
     mask.s_addr = ntohl(((1<<prefix_len)-1)<<(32-prefix_len));
     return inet_ntoa(mask);
+}
+
+char * resolve(const char *hostname) {
+    struct addrinfo hints = {.ai_family = AF_INET}, *addrs;
+    char *resolved;
+
+    int err = getaddrinfo(hostname, NULL, &hints, &addrs);
+    if (err != 0)
+    {
+        return NULL;
+    }
+
+    struct sockaddr_in *addr = (struct sockaddr_in*)addrs->ai_addr;
+    if (addr) {
+        resolved = inet_ntoa(addr->sin_addr);
+    }
+
+    freeaddrinfo(addrs);
+    return resolved;
 }
 
 static int wg_save(struct vpn_provider *provider, GKeyFile *keyfile) {
@@ -41,13 +62,21 @@ static void wg_died(struct connman_task *task, int exit_code, void *provider) {
 }
 
 static int wg_notify(DBusMessage *msg, struct vpn_provider *provider) {
-	vpn_provider_set_boolean(provider, "SplitRouting", true, false);
-
 	struct connman_ipaddress *ipaddress = connman_ipaddress_alloc(AF_INET);
-	char *address = vpn_provider_get_string(provider, "WireGuard.Interface.Address");
-	connman_ipaddress_set_ipv4(ipaddress, address, cidr_to_netmask(address), vpn_provider_get_string(provider, "Host"));
+	const char *address = vpn_provider_get_string(provider, "WireGuard.Interface.Address");
+	const char *host = vpn_provider_get_string(provider, "Host");
+	char *gateway = strdup(host);
+    char *portsep = strchr(gateway, ':');
+    if (portsep) *portsep = 0;
+	char *gw_address = strdup(resolve(gateway));
+
+	connman_ipaddress_set_ipv4(ipaddress, (char *)address, cidr_to_netmask(address), gw_address);
+	connman_ipaddress_set_p2p(ipaddress, true);
 	vpn_provider_set_ipaddress(provider, ipaddress);
+
 	connman_ipaddress_free(ipaddress);
+	free(gateway);
+	free(gw_address);
 
 	const char *nameservers = vpn_provider_get_string(provider, "WireGuard.Interface.DNS");
 	if (nameservers)
