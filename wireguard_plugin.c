@@ -66,8 +66,8 @@ static int wg_notify(DBusMessage *msg, struct vpn_provider *provider) {
 	const char *address = vpn_provider_get_string(provider, "WireGuard.Interface.Address");
 	const char *host = vpn_provider_get_string(provider, "Host");
 	char *gateway = strdup(host);
-    char *portsep = strchr(gateway, ':');
-    if (portsep) *portsep = 0;
+	char *portsep = strchr(gateway, ':');
+	if (portsep) *portsep = 0;
 	char *gw_address = strdup(resolve(gateway));
 
 	connman_ipaddress_set_ipv4(ipaddress, (char *)address, cidr_to_netmask(address), gw_address);
