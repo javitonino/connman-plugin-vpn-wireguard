@@ -86,6 +86,7 @@ static int wg_save(struct vpn_provider *provider, GKeyFile *keyfile) {
 	g_key_file_set_string(keyfile, group, "WireGuard.Peer.PublicKey", vpn_provider_get_string(provider, "WireGuard.Peer.PublicKey"));
 	g_key_file_set_string(keyfile, group, "WireGuard.Peer.AllowedIPs", vpn_provider_get_string(provider, "WireGuard.Peer.AllowedIPs"));
 	g_key_file_set_string(keyfile, group, "WireGuard.Peer.PersistentKeepalive", vpn_provider_get_string(provider, "WireGuard.Peer.PersistentKeepalive"));
+	g_key_file_set_string(keyfile, group, "WireGuard.Peer.PresharedKey", vpn_provider_get_string(provider, "WireGuard.Peer.PresharedKey"));
 	g_key_file_set_string(keyfile, group, "WireGuard.Interface.Address", vpn_provider_get_string(provider, "WireGuard.Interface.Address"));
 	g_key_file_set_string(keyfile, group, "WireGuard.Interface.PrivateKey", vpn_provider_get_string(provider, "WireGuard.Interface.PrivateKey"));
 	g_key_file_set_string(keyfile, group, "WireGuard.Interface.DNS", vpn_provider_get_string(provider, "WireGuard.Interface.DNS"));
@@ -132,6 +133,7 @@ static int wg_connect(struct vpn_provider *provider, struct connman_task *task, 
 	connman_task_add_variable(task, "WG_PEER_PUBLIC_KEY", vpn_provider_get_string(provider, "WireGuard.Peer.PublicKey"));
 	connman_task_add_variable(task, "WG_PEER_ALLOWED_IPS", vpn_provider_get_string(provider, "WireGuard.Peer.AllowedIPs"));
 	connman_task_add_variable(task, "WG_PEER_PERSISTENT_KEEPALIVE", vpn_provider_get_string(provider, "WireGuard.Peer.PersistentKeepalive"));
+	connman_task_add_variable(task, "WG_PEER_PRESHARED_KEY", vpn_provider_get_string(provider, "WireGuard.Peer.PresharedKey"));
 	connman_task_add_variable(task, "WG_INTERFACE_ADDRESS", vpn_provider_get_string(provider, "WireGuard.Interface.Address"));
 	connman_task_add_variable(task, "WG_INTERFACE_PRIVATE_KEY", vpn_provider_get_string(provider, "WireGuard.Interface.PrivateKey"));
 

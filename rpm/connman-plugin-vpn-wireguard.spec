@@ -1,6 +1,6 @@
 Name:          connman-plugin-vpn-wireguard
 Summary:       Connman plugin for Wireguard VPN
-Version:       0.3
+Version:       0.4
 Release:       1
 License:       GPLv3
 Requires:      connman >= 1.32
@@ -36,7 +36,10 @@ install wireguard.conf %{buildroot}%{_sysconfdir}/connman/vpn-plugin
 %{_sysconfdir}/connman/vpn-plugin/wireguard.conf
 
 %changelog
-* Mon Nov 12 2022 javitonino <> - 0.3-1
+* Thu Dec 1 2022 javitonino <> - 0.4-1
+- Support preshared keys
+
+* Sat Nov 12 2022 javitonino <> - 0.3-1
 - Generate routes for allowed IPs
 
 * Mon Nov 7 2022 javitonino <> - 0.2-1
