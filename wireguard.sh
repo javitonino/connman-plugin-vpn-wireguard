@@ -9,7 +9,7 @@ fi
 wireguard $WG_TUN
 trap "rm -f /var/run/wireguard/$WG_TUN.sock; sleep 0.5; exit" SIGTERM SIGINT
 
-/sbin/ip addr add $WG_INTERFACE_ADDRESS dev $WG_TUN
+PATH=/usr/sbin:/sbin:$PATH ip addr add $WG_INTERFACE_ADDRESS dev $WG_TUN
 KEYFILE=$(mktemp)
 echo $WG_INTERFACE_PRIVATE_KEY > $KEYFILE
 wg set $WG_TUN private-key $KEYFILE peer $WG_PEER_PUBLIC_KEY endpoint $WG_PEER_ENDPOINT allowed-ips "$WG_PEER_ALLOWED_IPS" persistent-keepalive $WG_PEER_PERSISTENT_KEEPALIVE

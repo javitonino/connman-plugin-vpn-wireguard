@@ -1,9 +1,9 @@
 Name:          connman-plugin-vpn-wireguard
 Summary:       Connman plugin for Wireguard VPN
-Version:       0.4
+Version:       0.5
 Release:       1
 License:       GPLv3
-Requires:      connman >= 1.32
+Requires:      connman >= 1.32+git193
 Requires:      wireguard-go
 Requires:      wireguard-tools
 Requires:      glib2 >= 2.28
@@ -36,6 +36,9 @@ install wireguard.conf %{buildroot}%{_sysconfdir}/connman/vpn-plugin
 %{_sysconfdir}/connman/vpn-plugin/wireguard.conf
 
 %changelog
+* Mon Feb 13 2023 javitonino <> - 0.5-1
+- Support Sailfish OS 4.5
+
 * Thu Dec 1 2022 javitonino <> - 0.4-1
 - Support preshared keys
 
